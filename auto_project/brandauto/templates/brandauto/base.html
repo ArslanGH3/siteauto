@@ -1,0 +1,85 @@
+{% load static %}
+{% load django_bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{{title}}</title>
+	<link type="text/css" href="{% static 'brandauto/css/styles.css' %}" rel="stylesheet" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link rel="shortcut icon" href="{% static 'brandauto/images/main.ico' %}" type="image/x-icon"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div class="table-page">
+	{% block mainmenu %}
+	<div class="header">
+		<ul id="mainmenu" class="mainmenu">
+			<li class="logo"><a href="{% url 'home' %}"><div class="logo"></div></a></li>
+			{% for m in menu %}
+			<li><a href="{% url m.url_name %}">{{m.title}}</a></li>
+			{% endfor %}
+			{% if request.user.is_authenticated %}
+			<div class="last">
+				<div id="block_mini_profile">
+<!--				Закомментировал, чтобы использовать Vue - изменил только в 2-х местах: -->
+<!--					здесь и в user_profile.html-->
+
+<!--					<input id="mini_profile" class="mini_profile" type="image"-->
+<!--						   src="{% static 'brandauto/images/mini_profile.png' %}"-->
+<!--						   title="{{ user.username }}"-->
+<!--						   data-bs-toggle="modal" data-bs-target="#exampleModal">-->
+					{% include 'users/user_profile.html' %}
+				</div>
+
+				<a class="logout" href="{% url 'logout' %}">Выйти</a>
+			</div>
+			{% else %}
+			<li class="last"><a href="{% url 'register' %}">Регистрация</a> | <a href="{% url 'login' %}">Войти</a></li>
+			{% endif %}
+		</ul>
+	</div>
+	{% endblock mainmenu %}
+
+	<div class="table-content">
+		<!-- Sidebar слева -->
+		<div class="left-chapters">
+			<ul id="leftchapters">
+			{% if cat_selected == 0 %}
+					<li class="selected">Все категории</li>
+			{% else %}
+					<li><a href="{% url 'home' %}">Все категории</a></li>
+			{% endif %}
+
+			{% for c in cats %}
+			{% if c.cars__count > 0 %}
+				{% if c.pk == cat_selected %}
+					<li class="selected">{{ c.name }}</li>
+				{% else %}
+					<li><a href="{{ c.get_absolute_url }}">{{ c.name }}</a></li>
+				{% endif %}
+			{% endif %}
+			{% endfor %}
+			</ul>
+		</div>
+		<!-- Конец Sidebar'а -->
+
+		<div class="content">
+		<!-- Блок контента -->
+			<div class="content-text">
+			{% block content %}
+			{% endblock content %}
+			</div>
+<!-- Конец блока контента -->
+		</div>
+
+	</div>
+	<!-- Footer -->
+	<div id="footer">
+		<p>&copy; 2021 Частичное или полное копирование информации с данного сайта для распространения на других ресурсах, в том числе и бумажных, строго запрещено.</p>
+	</div>
+</div>
+<!-- Конец footer'а и страницы -->
+</body>
+</html>

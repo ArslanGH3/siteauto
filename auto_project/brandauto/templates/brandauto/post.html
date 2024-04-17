@@ -1,0 +1,17 @@
+{% extends 'brandauto/base.html' %}
+
+{% block content %}
+
+<h1>{{ post.brand }}</h1>
+
+<div class="description-post">
+    {% if post.photo %}
+    <p><img class="img-article-left" src="{{ post.photo.url }}"></p>
+    {% else %}
+    <p><img class="img-article-left" src="{{ DEFAULT_CAR_IMAGE }}"></p>
+    {% endif %}
+
+    {{ post.description|linebreaks }}
+</div>
+
+{% endblock content %}
